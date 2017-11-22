@@ -19,7 +19,6 @@ public class ServiceFactory {
             service = constructor.newInstance(applicationConfiguration, baseServiceInfo.getPath(), baseServiceInfo.getName());
             return service;
         } catch (Exception e) {
-            e.printStackTrace();
             throw new ServiceFactoryException("Unable to create service intance for service address [" + serviceFullPathName + "].", e);
         }
     }

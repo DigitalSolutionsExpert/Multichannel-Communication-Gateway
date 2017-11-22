@@ -6,6 +6,7 @@ import com.digitalsolutionsexpert.CustomerNotification.Service.Adapter.BaseServi
 import javax.mail.Address;
 
 public class MailServiceAdapterRequest extends BaseServiceAdapterRequest {
+
     private Address from;
     private Address[] to;
     private Address[] cc;

@@ -3,10 +3,15 @@ package com.digitalsolutionsexpert.CustomerNotification.Schedule;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 
 public class BaseScheduleDeserializer extends JsonDeserializer<BaseSchedule> {
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
     public static final String[] CLASS_NAME_PROPERTIES = new String[]{"class-name", "className"};
 
     @Override
@@ -28,7 +33,6 @@ public class BaseScheduleDeserializer extends JsonDeserializer<BaseSchedule> {
             try {
                 clazz = Class.forName(className);
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
                 throw new JsonMappingException("Unable to deserialize BaseSchedule.", e);
             }
             return (BaseSchedule) objectMapper.treeToValue(jsonNode, clazz);

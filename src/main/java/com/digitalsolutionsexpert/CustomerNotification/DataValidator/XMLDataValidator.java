@@ -2,6 +2,8 @@ package com.digitalsolutionsexpert.CustomerNotification.DataValidator;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -19,10 +21,13 @@ import javax.xml.validation.Validator;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 
 public class XMLDataValidator extends BaseDataValidator {
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
     private boolean valid;
     private Schema schema;
 
@@ -36,7 +41,7 @@ public class XMLDataValidator extends BaseDataValidator {
             this.schema = xmlSchema;
             this.valid = true;
         } catch (SAXException e) {
-            e.printStackTrace();
+            logger.error(e.getStackTrace()[0].getMethodName(), e);
         }
     }
 
@@ -50,10 +55,8 @@ public class XMLDataValidator extends BaseDataValidator {
             reportSuccess = true;
         } catch (SAXException e) {
             reportMessageList.add(e.getMessage());
-            e.printStackTrace();
         } catch (IOException e) {
             reportMessageList.add(e.getMessage());
-            e.printStackTrace();
         }
         DataValidationReport dataValidationReport = new DataValidationReport(reportSuccess, reportMessageList);
         return dataValidationReport;
@@ -77,7 +80,6 @@ public class XMLDataValidator extends BaseDataValidator {
                 t.transform(new DOMSource((Node) payload), new StreamResult(sw));
                 payloadString = sw.toString();
             } catch (TransformerException e) {
-                e.printStackTrace();
                 throw e;
             }
         }
@@ -87,7 +89,6 @@ public class XMLDataValidator extends BaseDataValidator {
                 XmlMapper xmlMapper = new XmlMapper();
                 return xmlMapper.readValue(payloadString, JsonNode.class);
             } catch (Exception e) {
-                e.printStackTrace();
                 throw e;
             }
         }
@@ -106,7 +107,6 @@ public class XMLDataValidator extends BaseDataValidator {
                 builder = factory.newDocumentBuilder();
                 return builder.parse(new InputSource(new StringReader((String) payload)));
             } catch (Exception e) {
-                e.printStackTrace();
                 throw e;
             }
         }

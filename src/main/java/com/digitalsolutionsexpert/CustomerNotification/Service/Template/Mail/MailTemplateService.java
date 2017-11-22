@@ -15,10 +15,13 @@ import com.digitalsolutionsexpert.CustomerNotification.Service.Template.BaseTemp
 import com.digitalsolutionsexpert.CustomerNotification.Service.Template.Mail.Persistence.BaseMailTemplateConfigurationPersistenceService;
 import com.digitalsolutionsexpert.CustomerNotification.Service.Template.Mail.Persistence.MailTemplate;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 import javax.mail.internet.InternetAddress;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.Date;
@@ -26,6 +29,8 @@ import java.util.Map;
 import java.util.Objects;
 
 public class MailTemplateService extends BaseTemplateService {
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
     private BaseMailTemplateConfigurationPersistenceService persistenceService;
     private Date loadDate;
     private Map<Number, MailTemplate> mailTemplateMap;
@@ -46,7 +51,7 @@ public class MailTemplateService extends BaseTemplateService {
                     try {
                         MailTemplateService.this.loadConfiguration(false);
                     } catch (PersistenceServiceException e) {
-                        e.printStackTrace();
+                        logger.error(e.getStackTrace()[0].getMethodName(), e);
                     }
                 }
             };
@@ -121,10 +126,8 @@ public class MailTemplateService extends BaseTemplateService {
                 mailSendRequest.setAttachements(objectMapper.readValue(attachementString, BaseDatasource[].class));
             }
         } catch (BaseTemplateServiceException e) {
-            e.printStackTrace();
             throw e;
         } catch (Exception e) {
-            e.printStackTrace();
             throw new BaseTemplateServiceException(e);
         }
         return mailSendRequest;
@@ -133,7 +136,7 @@ public class MailTemplateService extends BaseTemplateService {
 
     private void loadConfiguration(boolean throwException) throws PersistenceServiceException {
         try {
-            System.out.println("Load configuration for service [" + this.getName() + "] instance [" + this.toString() + "] at " + new Date() + " on thread [" + Thread.currentThread().toString() + "]");
+            logger.info("Load configuration for service [" + this.getName() + "] instance [" + this.toString() + "] at " + new Date() + " on thread [" + Thread.currentThread().toString() + "]");
 
             //try load configurations
             Map<Number, MailTemplate> dbEMailTemplateMap = this.persistenceService.retrieveMailTemplates();
@@ -143,7 +146,7 @@ public class MailTemplateService extends BaseTemplateService {
             this.setLoadDate(new Date());
 
         } catch (PersistenceServiceException e) {
-            e.printStackTrace();
+            logger.error(e.getStackTrace()[0].getMethodName(), e);
             if (throwException) {
                 throw new PersistenceServiceException(e);
             }

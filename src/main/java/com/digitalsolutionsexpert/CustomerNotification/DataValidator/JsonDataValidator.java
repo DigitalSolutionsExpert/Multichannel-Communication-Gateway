@@ -7,13 +7,18 @@ import com.github.fge.jsonschema.core.report.ProcessingMessage;
 import com.github.fge.jsonschema.core.report.ProcessingReport;
 import com.github.fge.jsonschema.main.JsonSchema;
 import com.github.fge.jsonschema.main.JsonSchemaFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class JsonDataValidator extends BaseDataValidator {
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
     private boolean valid;
     private JsonSchema schema;
 
@@ -30,9 +35,9 @@ public class JsonDataValidator extends BaseDataValidator {
                 this.schema = jsonSchema;
                 this.valid = true;
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error(e.getStackTrace()[0].getMethodName(),e);
             } catch (ProcessingException e) {
-                e.printStackTrace();
+                logger.error(e.getStackTrace()[0].getMethodName(), e);
             }
         } else {
             this.valid = true;
@@ -55,7 +60,6 @@ public class JsonDataValidator extends BaseDataValidator {
                 }
             } catch (ProcessingException e) {
                 reportMessageList.add(e.getMessage());
-                e.printStackTrace();
             }
         }
         DataValidationReport dataValidationReport = new DataValidationReport(reportSuccess, reportMessageList);

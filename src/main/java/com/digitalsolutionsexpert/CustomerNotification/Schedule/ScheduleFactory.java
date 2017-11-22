@@ -4,12 +4,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.digitalsolutionsexpert.CustomerNotification.Application.ConfigurationProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ScheduleFactory {
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
     private static ObjectMapper objectMapper;
 
     static {
@@ -25,7 +30,6 @@ public class ScheduleFactory {
             String scheduleDefinition = (new ObjectMapper()).writeValueAsString(properties);
             baseSchedule = this.create(scheduleDefinition);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
             throw new ScheduleException("Unable to create schedule for given configuration.", e);
         } catch (ScheduleException e) {
             throw e;
@@ -46,7 +50,6 @@ public class ScheduleFactory {
         try {
             return objectMapper.readValue(scheduleDefinition, BaseSchedule.class);
         } catch (IOException e) {
-            e.printStackTrace();
             throw new ScheduleException("Unable to create schedule for given configuration.", e);
         }
     }
@@ -55,7 +58,6 @@ public class ScheduleFactory {
         try {
             return objectMapper.readValue(scheduleDefinition, BaseSchedule[].class);
         } catch (IOException e) {
-            e.printStackTrace();
             throw new ScheduleException("Unable to create schedule array for given configuration.", e);
         }
     }

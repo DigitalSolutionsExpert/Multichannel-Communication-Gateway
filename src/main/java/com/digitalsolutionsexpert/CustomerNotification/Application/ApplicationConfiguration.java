@@ -3,15 +3,20 @@ package com.digitalsolutionsexpert.CustomerNotification.Application;
 import com.digitalsolutionsexpert.CustomerNotification.Service.*;
 import com.digitalsolutionsexpert.CustomerNotification.Utils.DataSourceUtils;
 import com.digitalsolutionsexpert.CustomerNotification.Utils.YamlUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.io.FileNotFoundException;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ApplicationConfiguration {
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
     private String configFileName;
     private ConfigurationProperties properties;
     private Map<String, DataSource> dataSourceMap;

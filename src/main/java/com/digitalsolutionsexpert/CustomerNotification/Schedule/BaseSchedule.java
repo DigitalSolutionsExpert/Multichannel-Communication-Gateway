@@ -2,13 +2,18 @@ package com.digitalsolutionsexpert.CustomerNotification.Schedule;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
+import java.lang.invoke.MethodHandles;
 import java.util.UUID;
 
 
 @JsonIgnoreProperties({"DEFAULT_ENABLED", "class-name", "className"})
 public abstract class BaseSchedule implements Serializable {
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
     private static boolean DEFAULT_ENABLED = true;
     private String name;
     private boolean enabled;

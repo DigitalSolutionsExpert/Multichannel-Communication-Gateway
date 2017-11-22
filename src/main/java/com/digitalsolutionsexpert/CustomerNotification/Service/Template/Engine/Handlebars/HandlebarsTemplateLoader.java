@@ -2,10 +2,15 @@ package com.digitalsolutionsexpert.CustomerNotification.Service.Template.Engine.
 
 import com.github.jknack.handlebars.io.TemplateLoader;
 import com.github.jknack.handlebars.io.TemplateSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 
 public class HandlebarsTemplateLoader implements TemplateLoader {
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
     private String prefix;
     private String suffix;
     private HandlebarsTemplateService handlebarsTemplateService;

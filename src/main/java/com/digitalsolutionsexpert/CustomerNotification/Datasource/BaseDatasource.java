@@ -4,13 +4,18 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.digitalsolutionsexpert.CustomerNotification.Application.ApplicationConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.activation.DataSource;
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.UUID;
 
 @JsonIgnoreProperties({"SIZE_UNKNOWN", "applicationConfiguration", "prepared", "uuid"})
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
 public abstract class BaseDatasource implements DataSource {
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     public static long SIZE_UNKNOWN = -1;
 
@@ -19,7 +24,7 @@ public abstract class BaseDatasource implements DataSource {
     private String alias;
     private boolean prepared;
 
-    public BaseDatasource() {
+    public BaseDatasource() throws DatasourceException {
         this.uuid = UUID.randomUUID().toString();
         this.setPrepared(false);
         this.alias = null;
@@ -59,7 +64,7 @@ public abstract class BaseDatasource implements DataSource {
     public abstract void prepare() throws DatasourceException;
 
     public boolean isPrepared() {
-        return prepared;
+        return this.prepared;
     }
 
 

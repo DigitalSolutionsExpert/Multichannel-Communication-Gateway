@@ -3,6 +3,7 @@ package com.digitalsolutionsexpert.CustomerNotification.Schedule;
 import com.digitalsolutionsexpert.CustomerNotification.Service.BaseServiceException;
 
 public class ScheduleException extends BaseServiceException {
+
     public ScheduleException() {
     }
 

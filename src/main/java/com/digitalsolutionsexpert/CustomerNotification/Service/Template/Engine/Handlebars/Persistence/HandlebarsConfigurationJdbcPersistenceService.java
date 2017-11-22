@@ -5,8 +5,11 @@ import com.digitalsolutionsexpert.CustomerNotification.DataValidator.DataValidat
 import com.digitalsolutionsexpert.CustomerNotification.Service.BaseServiceException;
 import com.digitalsolutionsexpert.CustomerNotification.Service.Persistence.PersistenceServiceException;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
+import java.lang.invoke.MethodHandles;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -14,6 +17,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class HandlebarsConfigurationJdbcPersistenceService extends HandlebarsConfigurationBasePersistenceService {
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
     public HandlebarsConfigurationJdbcPersistenceService(ApplicationConfiguration applicationConfiguration, String path, String name) throws BaseServiceException {
         super(applicationConfiguration, path, name);
     }
@@ -51,7 +56,6 @@ public class HandlebarsConfigurationJdbcPersistenceService extends HandlebarsCon
                 dbFormatTemplateMap.put(handlebarsTemplate.getId(), handlebarsTemplate);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             throw new PersistenceServiceException(e);
         } finally {
             try {

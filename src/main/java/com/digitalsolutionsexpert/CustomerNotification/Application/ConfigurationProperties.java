@@ -2,12 +2,17 @@ package com.digitalsolutionsexpert.CustomerNotification.Application;
 
 import com.google.common.base.CaseFormat;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 public class ConfigurationProperties<K, V> extends ConcurrentHashMap<K, V> {
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
     public static String PATH_DELIMITER = ".";
     public static String PATH_DELIMITER_PATTERN = Pattern.quote(PATH_DELIMITER);
 

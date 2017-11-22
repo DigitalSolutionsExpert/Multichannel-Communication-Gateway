@@ -23,8 +23,11 @@ import com.digitalsolutionsexpert.CustomerNotification.Service.Template.BaseTemp
 import com.digitalsolutionsexpert.CustomerNotification.Service.Template.BaseTemplateService;
 import com.digitalsolutionsexpert.CustomerNotification.Service.Template.Engine.Handlebars.Persistence.HandlebarsConfigurationBasePersistenceService;
 import com.digitalsolutionsexpert.CustomerNotification.Service.Template.Engine.Handlebars.Persistence.HandlebarsTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.Map;
@@ -32,6 +35,8 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class HandlebarsTemplateService extends BaseTemplateService {
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
     private HandlebarsConfigurationBasePersistenceService persistenceService;
     private Date loadDate;
     private Map<Number, HandlebarsTemplate> handlebarsTemplateMap;
@@ -51,7 +56,7 @@ public class HandlebarsTemplateService extends BaseTemplateService {
                     try {
                         HandlebarsTemplateService.this.loadConfiguration(false);
                     } catch (PersistenceServiceException e) {
-                        e.printStackTrace();
+                        logger.error(e.getStackTrace()[0].getMethodName(), e);
                     }
                 }
             };
@@ -105,7 +110,6 @@ public class HandlebarsTemplateService extends BaseTemplateService {
                 result = template.apply(context);
             }
         } catch (IOException e) {
-            e.printStackTrace();
             throw new HandlebarsTemplateServiceException(e);
         }
         return result;
@@ -113,7 +117,7 @@ public class HandlebarsTemplateService extends BaseTemplateService {
 
     private void loadConfiguration(boolean throwException) throws PersistenceServiceException {
         try {
-            System.out.println("Load configuration for service [" + this.getName() + "] instance [" + this.toString() + "] at " + new Date() + " on thread [" + Thread.currentThread().toString() + "]");
+            logger.info("Load configuration for service [" + this.getName() + "] instance [" + this.toString() + "] at " + new Date() + " on thread [" + Thread.currentThread().toString() + "]");
             //try load configurations
             Map<Number, HandlebarsTemplate> dbFormatTemplateMap = this.persistenceService.retrieveFormatTemplates();
 
@@ -122,7 +126,7 @@ public class HandlebarsTemplateService extends BaseTemplateService {
             this.setLoadDate(new Date());
 
         } catch (PersistenceServiceException e) {
-            e.printStackTrace();
+            logger.error(e.getStackTrace()[0].getMethodName(), e);
             if (throwException) {
                 throw new PersistenceServiceException(e);
             }

@@ -6,8 +6,11 @@ import com.digitalsolutionsexpert.CustomerNotification.DataValidator.IDataValida
 import com.digitalsolutionsexpert.CustomerNotification.Service.BaseServiceException;
 import com.digitalsolutionsexpert.CustomerNotification.Service.Persistence.PersistenceServiceException;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
+import java.lang.invoke.MethodHandles;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -15,6 +18,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MailTemplateConfigurationJdbcPersistenceService extends BaseMailTemplateConfigurationPersistenceService {
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
 
     public MailTemplateConfigurationJdbcPersistenceService(ApplicationConfiguration applicationConfiguration, String path, String name) throws BaseServiceException {
         super(applicationConfiguration, path, name);
@@ -66,7 +71,6 @@ public class MailTemplateConfigurationJdbcPersistenceService extends BaseMailTem
                 dbMailTemplateMap.put(mailTemplate.getId(), mailTemplate);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             throw new PersistenceServiceException(e);
         } finally {
             try {

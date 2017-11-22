@@ -3,6 +3,7 @@ package com.digitalsolutionsexpert.CustomerNotification.Service.Persistence;
 import com.digitalsolutionsexpert.CustomerNotification.Service.BaseServiceException;
 
 public class PersistenceServiceException extends BaseServiceException {
+
     public PersistenceServiceException() {
     }
 

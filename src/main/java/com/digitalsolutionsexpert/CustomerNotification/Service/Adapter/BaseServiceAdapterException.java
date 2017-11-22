@@ -3,6 +3,7 @@ package com.digitalsolutionsexpert.CustomerNotification.Service.Adapter;
 import com.digitalsolutionsexpert.CustomerNotification.Service.BaseServiceException;
 
 public class BaseServiceAdapterException extends BaseServiceException {
+
     public BaseServiceAdapterException() {
         super();
     }

@@ -2,11 +2,16 @@ package com.digitalsolutionsexpert.CustomerNotification.Service;
 
 import com.digitalsolutionsexpert.CustomerNotification.Application.ApplicationConfiguration;
 import com.digitalsolutionsexpert.CustomerNotification.Application.ConfigurationProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import java.util.Objects;
 
 public class BaseServiceInfo {
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
     private String path;
     private String name;
     private ConfigurationProperties properties;

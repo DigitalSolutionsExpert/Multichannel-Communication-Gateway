@@ -29,7 +29,6 @@ public abstract class BaseService {
             objectMapper = new ObjectMapper();
             monitorData = objectMapper.writeValueAsString(this);
         } catch (Exception e) {
-            e.printStackTrace();
             throw new MonitorDataServiceException(e);
         } finally {
             objectMapper = null;

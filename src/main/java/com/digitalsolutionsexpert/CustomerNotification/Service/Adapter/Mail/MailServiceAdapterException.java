@@ -3,6 +3,7 @@ package com.digitalsolutionsexpert.CustomerNotification.Service.Adapter.Mail;
 import com.digitalsolutionsexpert.CustomerNotification.Service.Adapter.BaseServiceAdapterException;
 
 public class MailServiceAdapterException extends BaseServiceAdapterException {
+
     public MailServiceAdapterException() {
     }
 

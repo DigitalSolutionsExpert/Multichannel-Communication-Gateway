@@ -3,6 +3,7 @@ package com.digitalsolutionsexpert.CustomerNotification.Datasource;
 import com.digitalsolutionsexpert.CustomerNotification.Service.BaseServiceException;
 
 public class DatasourceException extends BaseServiceException{
+
     public DatasourceException() {
     }
 

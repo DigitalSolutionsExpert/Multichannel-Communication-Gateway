@@ -1,7 +1,14 @@
 package com.digitalsolutionsexpert.CustomerNotification.Schedule;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+
 public class IntervalSchedule extends BaseSchedule {
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
     private static long DEFAULT_INTERVAL = 1000;
     private static long DEFAULT_DELAY = 0;
 

@@ -2,7 +2,6 @@ package com.digitalsolutionsexpert.CustomerNotification.Service.Adapter;
 
 import com.digitalsolutionsexpert.CustomerNotification.Service.BaseServiceException;
 import com.digitalsolutionsexpert.CustomerNotification.Service.BaseServiceExecutionStatus;
-
 import java.util.Date;
 
 public class BaseServiceAdapterExecutionStatus extends BaseServiceExecutionStatus {

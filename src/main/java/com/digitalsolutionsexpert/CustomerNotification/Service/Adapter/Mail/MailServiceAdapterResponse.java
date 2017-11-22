@@ -5,6 +5,7 @@ import com.digitalsolutionsexpert.CustomerNotification.Datasource.BaseDatasource
 import javax.mail.Address;
 
 public class MailServiceAdapterResponse extends MailServiceAdapterRequest {
+
     private String messageId;
 
     public MailServiceAdapterResponse() {

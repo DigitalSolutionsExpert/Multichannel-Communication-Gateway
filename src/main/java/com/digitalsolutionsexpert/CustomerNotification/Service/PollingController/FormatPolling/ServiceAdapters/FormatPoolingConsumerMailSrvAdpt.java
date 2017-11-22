@@ -13,11 +13,16 @@ import com.digitalsolutionsexpert.CustomerNotification.Service.PollingController
 import com.digitalsolutionsexpert.CustomerNotification.Service.PollingController.Persistence.BasePollingPersistenceServiceException;
 import com.digitalsolutionsexpert.CustomerNotification.Service.Template.BaseTemplateServiceException;
 import com.digitalsolutionsexpert.CustomerNotification.Service.Template.Mail.MailTemplateService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 
 public class FormatPoolingConsumerMailSrvAdpt extends BasePollingConsumerService<FormatPollingRequest, FormatPollingResponse, FormatPollingStatus> {
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
     private MailServiceAdapter mailServiceAdapter;
     private MailTemplateService mailTemplateService;
 
@@ -33,7 +38,8 @@ public class FormatPoolingConsumerMailSrvAdpt extends BasePollingConsumerService
         try {
             FormatPollingRequest request = this.getRequest();
             formatPollingStatus = new FormatPollingStatus();
-            System.out.println("Executing mail request on [" + Thread.currentThread().toString() + "] " + request.toString());
+
+            logger.info("Executing mail request on [" + Thread.currentThread().toString() + "] " + request.toString());
 
             MailServiceAdapterRequest mailServiceAdapterRequest = this.mailTemplateService.apply(request.getTemplateId(), request.getRequestData());
 
@@ -53,9 +59,7 @@ public class FormatPoolingConsumerMailSrvAdpt extends BasePollingConsumerService
             formatPollingStatus.setDefinitive(mailServiceAdapterExecutionResult.getStatus().isDefinitive());
             formatPollingStatus.setStatusDate(mailServiceAdapterExecutionResult.getStatus().getStatusDate());
             formatPollingStatus.setSuccess(mailServiceAdapterExecutionResult.getStatus().isSuccess());
-
         } catch (BaseTemplateServiceException e) {
-            e.printStackTrace();
             formatPollingStatus.setStatus(BaseServiceExecutionStatus.STATUS_EXCPEPTION);
             formatPollingStatus.setStatusReason(e.getClass().getSimpleName());
             formatPollingStatus.setDescription(e.getMessage());
@@ -63,7 +67,6 @@ public class FormatPoolingConsumerMailSrvAdpt extends BasePollingConsumerService
             formatPollingStatus.setStatusDate(new Date());
             formatPollingStatus.setSuccess(false);
         } catch (BasePollingPersistenceServiceException e) {
-            e.printStackTrace();
             formatPollingStatus.setStatus(BaseServiceExecutionStatus.STATUS_EXCPEPTION);
             formatPollingStatus.setStatusReason(e.getClass().getSimpleName());
             formatPollingStatus.setDescription(e.getMessage());
@@ -71,7 +74,6 @@ public class FormatPoolingConsumerMailSrvAdpt extends BasePollingConsumerService
             formatPollingStatus.setStatusDate(new Date());
             formatPollingStatus.setSuccess(false);
         } catch (Exception e) {
-            e.printStackTrace();
             formatPollingStatus.setStatus(BaseServiceExecutionStatus.STATUS_EXCPEPTION);
             formatPollingStatus.setStatusReason(e.getClass().getSimpleName());
             formatPollingStatus.setDescription(e.getMessage());
@@ -79,10 +81,19 @@ public class FormatPoolingConsumerMailSrvAdpt extends BasePollingConsumerService
             formatPollingStatus.setStatusDate(new Date());
             formatPollingStatus.setSuccess(false);
         } finally {
-            try {
-                this.getPollingControllerService().getPersistenceService().updateStatus(this.getRequest(), null, formatPollingStatus);
-            } catch (BasePollingPersistenceServiceException e) {
-                e.printStackTrace();
+            boolean success = false;
+            int updateTryCount = 0;
+            while (!success && updateTryCount < 3) {
+                try {
+                    updateTryCount++;
+                    this.getPollingControllerService().getPersistenceService().updateStatus(this.getRequest(), null, formatPollingStatus);
+                    success = true;
+                } catch (BasePollingPersistenceServiceException e) {
+                    try {
+                        logger.error(e.getStackTrace()[0].getMethodName() + " [update try count " + updateTryCount + "]", e);
+                    } catch (Exception ex) {
+                    }
+                }
             }
         }
     }

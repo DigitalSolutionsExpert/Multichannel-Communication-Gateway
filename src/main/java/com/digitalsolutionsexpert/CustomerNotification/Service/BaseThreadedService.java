@@ -6,12 +6,17 @@ import com.digitalsolutionsexpert.CustomerNotification.Application.Configuration
 import com.digitalsolutionsexpert.CustomerNotification.Schedule.BaseSchedule;
 import com.digitalsolutionsexpert.CustomerNotification.Schedule.ScheduleException;
 import com.digitalsolutionsexpert.CustomerNotification.Schedule.ScheduleFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @JsonIgnoreProperties({"thread"})
 public abstract class BaseThreadedService extends BaseService implements Runnable {
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
     private Thread thread;
     private Map<String, BaseSchedule> schedules;
     private Map<String, List<BaseServiceScheduleListener>> scheduleListeners;
@@ -96,7 +101,7 @@ public abstract class BaseThreadedService extends BaseService implements Runnabl
                     try {
                         scheduleListener.onSchedule(this.getSchedules().get(scheduleName));
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        logger.error(e.getStackTrace()[0].getMethodName(), e);
                     }
                 }
                 this.schedules.get(scheduleName).setLastHappened();
@@ -152,7 +157,7 @@ public abstract class BaseThreadedService extends BaseService implements Runnabl
             try {
                 Thread.sleep(this.sleepInterval);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.error(e.getStackTrace()[0].getMethodName(), e);
             }
 
             this._fireScheduleEvents();

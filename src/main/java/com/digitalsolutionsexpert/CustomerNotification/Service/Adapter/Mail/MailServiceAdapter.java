@@ -7,6 +7,8 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.nlab.smtp.pool.SmtpConnectionPool;
 import org.nlab.smtp.transport.connection.ClosableSmtpConnection;
 import org.nlab.smtp.transport.factory.SmtpConnectionFactoryBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -14,10 +16,13 @@ import javax.mail.*;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import java.lang.invoke.MethodHandles;
 import java.util.Objects;
 import java.util.Properties;
 
 public class MailServiceAdapter extends BaseServiceAdapter {
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
     SmtpConnectionPool smtpConnectionPool;
 
     public MailServiceAdapter(ApplicationConfiguration applicationConfiguration, String path, String name) throws BaseServiceException {
@@ -43,7 +48,6 @@ public class MailServiceAdapter extends BaseServiceAdapter {
             this.sendMail((MailServiceAdapterRequest) request);
             executionStatus = (BaseServiceAdapterExecutionStatus) BaseServiceAdapterExecutionStatus.createFrom(null);
         } catch (MailServiceAdapterException e) {
-            e.printStackTrace();
             executionStatus = (BaseServiceAdapterExecutionStatus) BaseServiceAdapterExecutionStatus.createFrom(e);
         }
         return new BaseServiceAdapterExecutionResult(null, executionStatus);
@@ -131,10 +135,8 @@ public class MailServiceAdapter extends BaseServiceAdapter {
                 smtpConnection.sendMessage(mimeMessage);
 
             } catch (MessagingException e) {
-                e.printStackTrace();
                 throw new MailServiceAdapterException(e);
             } catch (Exception e) {
-                e.printStackTrace();
                 throw new MailServiceAdapterException(e);
             } finally {
                 if (smtpConnection != null) {

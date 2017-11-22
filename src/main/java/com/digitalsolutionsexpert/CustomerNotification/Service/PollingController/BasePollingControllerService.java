@@ -5,15 +5,21 @@ import com.digitalsolutionsexpert.CustomerNotification.Application.Configuration
 import com.digitalsolutionsexpert.CustomerNotification.Service.BaseServiceException;
 import com.digitalsolutionsexpert.CustomerNotification.Service.BaseThreadedService;
 import com.digitalsolutionsexpert.CustomerNotification.Service.PollingController.Persistence.BasePollingPersistenceService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.*;
 
 public class BasePollingControllerService extends BaseThreadedService {
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
     private final BlockingQueue<Runnable> blockingQueue;
     private int blockingQueueMaxSize;
     private final BasePollingPersistenceService persistenceService;
     private final BasePoolingProducerService producerService;
+    private final BasePoolingHistoryService historyService;
     private ThreadPoolExecutor threadPoolExecutor;
     private RejectedExecutionHandler rejectedExecutionHandler;
     private int corePoolSize;
@@ -28,6 +34,8 @@ public class BasePollingControllerService extends BaseThreadedService {
         this.persistenceService = (BasePollingPersistenceService) this.getApplicationConfiguration().getService(path + "." + name + "." + "service" + "." + "service-polling-persistence");
         this.producerService = (BasePoolingProducerService) this.getApplicationConfiguration().getService(path + "." + name + "." + "service" + "." + "service-polling-producer");
         this.producerService.setPollingControllerService(this);
+        this.historyService = (BasePoolingHistoryService) this.getApplicationConfiguration().getService(path + "." + name + "." + "service" + "." + "service-polling-history");
+        this.historyService.setPollingControllerService(this);
 
         ConfigurationProperties configurationPropertiesThreadPoolExecutor = this.getProperties().getConfigurationSubtree("thread-pool-executor");
         this.corePoolSize = Integer.valueOf(String.valueOf(configurationPropertiesThreadPoolExecutor.get("core-pool-size", "1")));
@@ -42,7 +50,7 @@ public class BasePollingControllerService extends BaseThreadedService {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    //logger.error(e.getStackTrace()[0].getMethodName(), e);
                 }
                 executor.execute(r);
             }

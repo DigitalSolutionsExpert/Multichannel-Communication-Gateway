@@ -1,6 +1,7 @@
 package com.digitalsolutionsexpert.CustomerNotification.Service.Adapter;
 
 public class BaseServiceAdapterExecutionResult {
+
     private BaseServiceAdapterResponse response;
     private BaseServiceAdapterExecutionStatus status;
 
